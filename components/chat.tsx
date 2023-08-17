@@ -1,3 +1,8 @@
+
+// Initialize the h2ogpt client
+import { Client } from 'gradio_client';
+const HOST_URL = "http://localhost:7860"; // Change to your h2ogpt server URL
+const client = new Client(HOST_URL);
 'use client'
 
 import { useChat, type Message } from 'ai/react'
@@ -109,3 +114,13 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     </>
   )
 }
+
+// Replace the useChat hook with logic for sending messages to the h2ogpt server
+function sendMessage(message) {
+  const kwargs = { instruction_nochat: message };
+  const res = client.predict(JSON.stringify(kwargs), { api_name: '/submit_nochat_api' });
+  const response = JSON.parse(res)['response'];
+  // Handle the response and update the UI accordingly
+}
+
+// Ensure that messages are formatted correctly for display in the UI, based on the response structure of the h2ogpt client.

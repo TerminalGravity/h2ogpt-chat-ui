@@ -1,3 +1,8 @@
+
+// Initialize the h2ogpt client (replace OpenAI initialization)
+import { Client } from 'gradio_client';
+const HOST_URL = "http://localhost:7860"; // Change to your h2ogpt server URL
+const client = new Client(HOST_URL);
 import { kv } from '@vercel/kv'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
@@ -65,3 +70,12 @@ export async function POST(req: Request) {
 
   return new StreamingTextResponse(stream)
 }
+
+// Modify the POST function to send chat messages to the h2ogpt server using the client
+router.post('/message', async (req, res) => {
+  const message = req.body.message;
+  const kwargs = { instruction_nochat: message };
+  const response = client.predict(JSON.stringify(kwargs), { api_name: '/submit_nochat_api' });
+  // Handle the response from the h2ogpt server and send it back to the Chatbot UI
+  res.json(response);
+});
